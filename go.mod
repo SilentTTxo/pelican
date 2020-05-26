@@ -1,4 +1,4 @@
-module github.com/itchio/pelican
+module github.com/SilentTTxo/pelican
 
 go 1.12
 
