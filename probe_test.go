@@ -3,9 +3,9 @@ package pelican_test
 import (
 	"testing"
 
+	"github.com/SilentTTxo/pelican"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
-	"github.com/itchio/pelican"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -177,4 +177,19 @@ func Test_Stockboy(t *testing.T) {
 	info, err := pelican.Probe(f, testProbeParams(t))
 	assert.NoError(t, err)
 	assert.EqualValues(t, pelican.Arch386, info.Arch)
+}
+
+const version = "ProductVersion"
+const fileDesc = "FileDescription"
+const productName = "ProductName"
+
+func Test_Dll(t *testing.T) {
+	f, err := eos.Open("./testdata/dll/CLI.Component.Runtime.Extension.EEU.ni.dll")
+	assert.NoError(t, err)
+	defer f.Close()
+
+	info, err := pelican.Probe(f, testProbeParams(t))
+	assert.NoError(t, err)
+
+	assert.EqualValues(t, "4.5.5709.21724", info.VersionProperties[version])
 }

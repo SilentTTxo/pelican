@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/SilentTTxo/pelican/pe"
 	"github.com/itchio/headway/united"
-	"github.com/itchio/pelican/pe"
 
 	xj "github.com/basgys/goxml2json"
 	"github.com/pkg/errors"

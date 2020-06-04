@@ -1,7 +1,7 @@
 package pelican
 
 import (
-	"github.com/itchio/pelican/pe"
+	"github.com/SilentTTxo/pelican/pe"
 
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
@@ -14,6 +14,9 @@ type ProbeParams struct {
 	// we can't parse some parts of the file
 	Strict bool
 }
+
+// https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#resource-directory-table  Resource Table
+const ResourceTableIdx = 2
 
 // Probe retrieves information about an PE file
 func Probe(file eos.File, params ProbeParams) (*PeInfo, error) {
@@ -53,6 +56,20 @@ func Probe(file eos.File, params ProbeParams) (*PeInfo, error) {
 			}
 			consumer.Warnf("Could not parse resources: %+v", err)
 		}
+	} else {
+		var dd [16]pe.DataDirectory
+		switch oh := pf.OptionalHeader.(type) {
+		case *pe.OptionalHeader32:
+			dd = oh.DataDirectory
+		case *pe.OptionalHeader64:
+			dd = oh.DataDirectory
+		}
+
+		ResourceTable := dd[ResourceTableIdx]
+
+		sect := pf.GetSectionByRva(ResourceTable.VirtualAddress)
+
+		err = params.parseResources(info, sect)
 	}
 
 	return info, nil

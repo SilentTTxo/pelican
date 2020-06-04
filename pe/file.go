@@ -222,6 +222,16 @@ func (f *File) Section(name string) *Section {
 	return nil
 }
 
+func (f *File) GetSectionByRva(rva uint32) *Section {
+	for _, s := range f.Sections {
+		if s.VirtualAddress >= rva && s.VirtualAddress+s.Size > rva {
+			return s
+		}
+	}
+
+	return nil
+}
+
 func (f *File) DWARF() (*dwarf.Data, error) {
 	// There are many other DWARF sections, but these
 	// are the ones the debug/dwarf package uses.
